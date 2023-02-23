@@ -1,0 +1,8 @@
+.links {
+  text-align: center;
+  font-size: 14px !important;
+  color: gray;
+}
+.links a {
+  text-decoration: none;
+}
