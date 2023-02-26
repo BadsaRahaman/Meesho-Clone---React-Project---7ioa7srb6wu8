@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { routes } from "../../helpers/routes";
 import Rating from "@mui/material/Rating";
 
-const Products = ({ dataList }) => {
+const Products = ({ dataList }) => { 
   const navigator = useNavigate();
   return (
     <div className={styles.productGrid}>

@@ -1,19 +1,11 @@
 import styles from "./style.module.css";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { routes } from "../../helpers/routes";
 
 import InputAdornment from "@mui/material/InputAdornment";
-
-const initialValues = {
-  name: "",
-  mobile: "",
-  email: "",
-  password: "",
-};
-
 import {
   TextField,
   Grid,
@@ -25,9 +17,58 @@ import {
   Button,
 } from "@mui/material";
 
+const initialValues = {
+  name: "",
+  mobile: "",
+  email: "",
+  password: "",
+};
+
 const Register = () => {
   const [values, setValues] = useState(initialValues);
+  const [data, setData] = useState([]);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const navigate = useNavigate();
+
+  const getData = (e) => {
+    const { name, value } = e.target;
+    setValues(() => {
+      return { ...values, [name]: value };
+    });
+  };
+
+  const handleRegister = (e) => {
+    e.preventDefault(); 
+    const {name, email, mobile, password} = values;
+
+     if (name === ""){
+      alert("name filed is required");
+     }
+      else if (mobile === ""){
+      alert("mobile filed is required");
+     }
+      else if (email === ""){
+      alert("email filed is required");
+     }
+      else if (!email.includes("@")){
+      alert("please enter valid email address");
+     }
+      else if (password === ""){
+      alert("password filed is required");
+     }
+      else if (password.length < 5){
+      alert("password to short please minimum 5");
+     }
+      else{
+        localStorage.setItem("regData", JSON.stringify([...data,values]));
+        alert("Resiter succesfully..");
+                      //Multiple data save localStorage..
+        const getUserArr = JSON.parse(localStorage.getItem("regData"));
+        setData(getUserArr)
+        // navigate(routes.login.path);
+     }
+     
+  };
 
   const handleClickShowPassword = () => {
     setIsPasswordVisible((prev) => !prev);
@@ -61,18 +102,7 @@ const Register = () => {
               name="name"
               variant="standard"
               value={values.name}
-              onChange={(e) => setValues({ ...values, name: e.target.value })}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              id="standard-basic"
-              label="Name"
-              name="name"
-              variant="standard"
-              value={values.name}
-              onChange={(e) => setValues({ ...values, name: e.target.value })}
+              onChange={getData}
             />
           </Grid>
           <Grid item xs={12}>
@@ -83,7 +113,7 @@ const Register = () => {
               name="mobile"
               variant="standard"
               value={values.mobile}
-              onChange={(e) => setValues({ ...values, mobile: e.target.value })}
+              onChange={getData}
             />
           </Grid>
           <Grid item xs={12}>
@@ -94,9 +124,10 @@ const Register = () => {
               name="email"
               variant="standard"
               value={values.email}
-              onChange={(e) => setValues({ ...values, email: e.target.value })}
+              onChange={getData}
             />
           </Grid>
+
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -106,9 +137,7 @@ const Register = () => {
               variant="standard"
               type={`${isPasswordVisible ? "text" : "password"}`}
               value={values.password}
-              onChange={(e) =>
-                setValues({ ...values, password: e.target.value })
-              }
+              onChange={getData}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -125,7 +154,7 @@ const Register = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <Button fullWidth variant="contained">
+            <Button fullWidth variant="contained" onClick={handleRegister}>
               Register
             </Button>
           </Grid>

@@ -1,6 +1,5 @@
 import styles from "./style.module.css";
 import React from "react";
-
 import { useProducts } from "../../helpers/useProducts";
 import Products from "../../components/Products";
 import NabBar from "../../components/NavBar";

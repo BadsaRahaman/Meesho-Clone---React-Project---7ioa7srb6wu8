@@ -38,10 +38,7 @@ const index = () => {
                 className="inputSearch"
               />
             </form>
-            {/* <div className="inputCloseSearch">
-              <i className="fa-solid fa-xmark" id="closeSearch"></i>
-            </div> */}
-
+            
             <div className="searchRecentModal">
               <h3>Recent Searches</h3>
               <div className="listofRecent"></div>
@@ -71,7 +68,7 @@ const index = () => {
           <div className="becomeSupplierContainer">
             <p>Become a Supplier</p>
           </div>
-
+                 {/* <!--Profile And Cart--> */}
           <div className="profileAndCart">
             <Link to={routes.register.path} className="profileContainer">
               <div className="profileIcon">
@@ -79,16 +76,17 @@ const index = () => {
               </div>
               <p>Profile</p>
             </Link>
-
-            <div className="CartContainer">
+            <Link to = {routes.cart.path} className="CartContainer">
               <div className="CartIcon">
                 <img src={cart} />
               </div>
               <p>Cart</p>
-            </div>
+            </Link>
           </div>
+
         </div>
       </header>
+      
       {/* <!--navigation--> */}
       <nav>
         <ul>
