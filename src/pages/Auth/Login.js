@@ -15,6 +15,8 @@ import {
   Container,
   Typography,
 } from "@mui/material";
+import { getSingleUser } from "../../helpers/localStorage";
+import { SnackbarContext, severity } from "../../components/SnackBar";
 
 const initialValues = {
   email: "",
@@ -24,44 +26,45 @@ const initialValues = {
 const Login = () => {
   const [values, setValues] = useState(initialValues);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const navigator = useNavigate();
+  const navigate = useNavigate();
+  const snackBarContext = React.useContext(SnackbarContext);
 
-  const getData = (e) => {
+  const inputOnChange = (e) => {
     const { value, name } = e.target;
     setValues(() => {
       return { ...values, [name]: value };
     });
   };
+
   const handleLogin = (e) => {
     e.preventDefault();
-    const getUserArr = localStorage.getItem("regData");
+
     const { email, password } = values;
 
     if (email === "") {
       alert("email filed is required");
-    }
-    else if (!email.includes("@")) {
+    } else if (!email.includes("@")) {
       alert("please enter valid email address");
-    }
-    else if (password === "") {
+    } else if (password === "") {
       alert("password filed is required");
-    } 
-    else if (password.length < 5) {
+    } else if (password.length < 5) {
       alert("password to short please minimum 5");
-    }
-    else {
-      if (getUserArr && getUserArr.length) {
-        const userData = JSON.parse(getUserArr);
-        const userLogin = userData.filter((ele, key) => {
-          return ele.email === email && ele.password === password;
+    } else {
+      const success = getSingleUser({ email, password });
+      console.log({ success, email, password });
+      if (success) {
+        snackBarContext({
+          severity: severity.success,
+          msg: "Login Successful!",
+          isOpen: true,
         });
-        console.log(userLogin);
-        if (userLogin.length === 0) {
-          alert("Invalid User..");
-        } else {
-          alert("login successfully");
-          navigator(routes.home.path); 
-        }
+        navigate("/", { replace: true });
+      } else {
+        snackBarContext({
+          severity: severity.error,
+          msg: "Invalid Credentials!",
+          isOpen: true,
+        });
       }
     }
   };
@@ -98,7 +101,7 @@ const Login = () => {
               name="email"
               variant="standard"
               value={values.email}
-              onChange={getData}
+              onChange={inputOnChange}
             />
           </Grid>
           <Grid item xs={12}>
@@ -110,7 +113,7 @@ const Login = () => {
               variant="standard"
               type={`${isPasswordVisible ? "text" : "password"}`}
               value={values.password}
-              onChange={getData}
+              onChange={inputOnChange}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">

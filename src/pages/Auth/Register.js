@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { routes } from "../../helpers/routes";
+import { createUser } from "../../helpers/localStorage";
 
 import InputAdornment from "@mui/material/InputAdornment";
 import {
@@ -16,6 +17,7 @@ import {
   Typography,
   Button,
 } from "@mui/material";
+import { SnackbarContext, severity } from "../../components/SnackBar";
 
 const initialValues = {
   name: "",
@@ -29,6 +31,7 @@ const Register = () => {
   const [data, setData] = useState([]);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const navigate = useNavigate();
+  const snackBarContext = React.useContext(SnackbarContext);
 
   const getData = (e) => {
     const { name, value } = e.target;
@@ -38,36 +41,38 @@ const Register = () => {
   };
 
   const handleRegister = (e) => {
-    e.preventDefault(); 
-    const {name, email, mobile, password} = values;
+    e.preventDefault();
+    const { name, email, mobile, password } = values;
 
-     if (name === ""){
+    if (name === "") {
       alert("name filed is required");
-     }
-      else if (mobile === ""){
+    } else if (mobile === "") {
       alert("mobile filed is required");
-     }
-      else if (email === ""){
+    } else if (email === "") {
       alert("email filed is required");
-     }
-      else if (!email.includes("@")){
+    } else if (!email.includes("@")) {
       alert("please enter valid email address");
-     }
-      else if (password === ""){
+    } else if (password === "") {
       alert("password filed is required");
-     }
-      else if (password.length < 5){
+    } else if (password.length < 5) {
       alert("password to short please minimum 5");
-     }
-      else{
-        localStorage.setItem("regData", JSON.stringify([...data,values]));
-        alert("Resiter succesfully..");
-                      //Multiple data save localStorage..
-        const getUserArr = JSON.parse(localStorage.getItem("regData"));
-        setData(getUserArr)
-        // navigate(routes.login.path);
-     }
-     
+    } else {
+      const user = createUser(values);
+      if (user) {
+        snackBarContext({
+          severity: severity.success,
+          msg: "Resiter succesfully..",
+          isOpen: true,
+        });
+        navigate("/", { replace: true });
+      } else {
+        snackBarContext({
+          severity: severity.warning,
+          msg: "User Already Exist",
+          isOpen: true,
+        });
+      }
+    }
   };
 
   const handleClickShowPassword = () => {

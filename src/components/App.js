@@ -10,23 +10,33 @@ import Cart from "../pages/Cart";
 import Login from "../pages/Auth/Login";
 import Register from "../pages/Auth/Register";
 import Layout from "../helpers/Layout";
+import CustomizedSnackbars, { SnackbarContext } from "../components/SnackBar";
 
 const App = () => {
+  const [snackbarData, setSnackbarData] = React.useState({
+    severity: "",
+    msg: "",
+    isOpen: false,
+  });
+
   return (
     <div id="main">
-      <Layout>
-        <Routes>
-          <Route path={routes.home.path} element={<Catelog />} />
-          <Route path={routes.cart.path} element={<Cart />} />
-          <Route path={routes.products.path} element={<Products />} />
-          <Route
-            path={`${routes.products.path}/:id`}
-            element={<ProductDetails />}
-          />
-          <Route path={routes.login.path} element={<Login />} />
-          <Route path={routes.register.path} element={<Register />} />
-        </Routes>
-      </Layout>
+      <SnackbarContext.Provider value={setSnackbarData}>
+        <CustomizedSnackbars data={snackbarData} />
+        <Layout>
+          <Routes>
+            <Route path={routes.home.path} element={<Catelog />} />
+            <Route path={routes.cart.path} element={<Cart />} />
+            <Route path={routes.products.path} element={<Products />} />
+            <Route
+              path={`${routes.products.path}/:id`}
+              element={<ProductDetails />}
+            />
+            <Route path={routes.login.path} element={<Login />} />
+            <Route path={routes.register.path} element={<Register />} />
+          </Routes>
+        </Layout>
+      </SnackbarContext.Provider>
     </div>
   );
 };
