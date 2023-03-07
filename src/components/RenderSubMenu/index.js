@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { routes } from "../../helpers/routes";
+import { routes } from "../../utils/routes";
 
 const index = ({ data }) => {
-  // navSubData map ...... 
-  
+  // navSubData map ......
+
   return data.map((el, index) => {
     const data = el.data;
     return (

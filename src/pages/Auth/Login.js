@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { routes } from "../../helpers/routes";
+import { routes } from "../../utils/routes";
 import {
   TextField,
   Grid,
@@ -15,8 +15,9 @@ import {
   Container,
   Typography,
 } from "@mui/material";
-import { getSingleUser } from "../../helpers/localStorage";
+import { getSingleUser } from "../../utils/localStorage";
 import { SnackbarContext, severity } from "../../components/SnackBar";
+import { useData } from "../../utils/Store";
 
 const initialValues = {
   email: "",
@@ -28,6 +29,11 @@ const Login = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const navigate = useNavigate();
   const snackBarContext = React.useContext(SnackbarContext);
+
+  const {
+    state: { user },
+    dispatch,
+  } = useData();
 
   const inputOnChange = (e) => {
     const { value, name } = e.target;
@@ -51,8 +57,15 @@ const Login = () => {
       alert("password to short please minimum 5");
     } else {
       const success = getSingleUser({ email, password });
-      console.log({ success, email, password });
+
       if (success) {
+        const user = {
+          name: success.name,
+          email: success.email,
+          id: success.id,
+        };
+        dispatch({ type: "SET_USER", payload: user });
+
         snackBarContext({
           severity: severity.success,
           msg: "Login Successful!",
@@ -89,58 +102,68 @@ const Login = () => {
           marginInline: "auto",
         }}
       >
-        <Typography variant={"h5"} fontWeight={"600"} textAlign={"center"}>
-          Login
-        </Typography>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              id="standard-basic"
-              label="Email"
-              name="email"
-              variant="standard"
-              value={values.email}
-              onChange={inputOnChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              id="standard-basic"
-              label="Password"
-              name="password"
-              variant="standard"
-              type={`${isPasswordVisible ? "text" : "password"}`}
-              value={values.password}
-              onChange={inputOnChange}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                    >
-                      {isPasswordVisible ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Button fullWidth variant="contained" onClick={handleLogin}>
+        {user ? (
+          <Typography>Welcome {user.name}</Typography>
+        ) : (
+          <>
+            <Typography variant={"h5"} fontWeight={"600"} textAlign={"center"}>
               Login
-            </Button>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography className={styles.links}>
-              Don't have an account?{" "}
-              <Link to={routes.register.path}>Register</Link> now
             </Typography>
-          </Grid>
-        </Grid>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  id="standard-basic"
+                  label="Email"
+                  name="email"
+                  variant="standard"
+                  value={values.email}
+                  onChange={inputOnChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  id="standard-basic"
+                  label="Password"
+                  name="password"
+                  variant="standard"
+                  type={`${isPasswordVisible ? "text" : "password"}`}
+                  value={values.password}
+                  onChange={inputOnChange}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          edge="end"
+                        >
+                          {isPasswordVisible ? (
+                            <VisibilityOff />
+                          ) : (
+                            <Visibility />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button fullWidth variant="contained" onClick={handleLogin}>
+                  Login
+                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography className={styles.links}>
+                  Don't have an account?{" "}
+                  <Link to={routes.register.path}>Register</Link> now
+                </Typography>
+              </Grid>
+            </Grid>
+          </>
+        )}
       </Card>
     </Container>
   );

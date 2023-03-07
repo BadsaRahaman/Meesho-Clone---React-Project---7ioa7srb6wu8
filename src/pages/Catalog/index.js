@@ -1,10 +1,13 @@
 import styles from "./style.module.css";
-import React from "react";
-import { useProducts } from "../../helpers/useProducts";
+import React, { useContext } from "react";
+import { useProducts } from "../../utils/useProducts";
 import Products from "../../components/Products";
 import NabBar from "../../components/NavBar";
+import { useData } from "../../utils/Store";
 
 const Catalog = () => {
+  const hi = useData();
+  const { state, dispatch } = useData();
   const productData = useProducts();
   return (
     <div>

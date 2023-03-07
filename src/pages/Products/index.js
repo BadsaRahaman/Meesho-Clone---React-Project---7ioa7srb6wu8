@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./style.module.css";
 import NabBar from "../../components/NavBar";
 import Products from "../../components/Products";
-import { useProducts } from "../../helpers/useProducts";
+import { useProducts } from "../../utils/useProducts";
 
 const Product = () => {
   const productData = useProducts();
